@@ -5,7 +5,7 @@ const CLIENT_ID = "db7b843b-d7a1-4969-b665-61dcafec2444";
 const CLIENT_SECRET = "isoxum99YPdk/K+0R8ZHOlTdrIdeyxcg6HKi3+j3Blk=";
 const TENANT_ID = "a9363b1a-c633-4337-ac61-b75acb815ff2"
 
-function getToken() {
+function ShareFolder() {
 	var options = {
 	  'method': 'POST',
 	  'url': `https://accounts.accesscontrol.windows.net/${TENANT_ID}/tokens/OAuth/2`,
@@ -30,26 +30,51 @@ function getToken() {
     });
 }
 
-getToken().then(token => {
+/*createFolder().then(token => {
 	//console.log("Final Token"+token);
 	// Folder Create in Documents doc library
 	var documentLibraryName = "Shared%20Documents";
-	var folderName = "DBDocs";
+	var folderName = "test1Demo";
 	var SiteURL = "https://spo365devfactory.sharepoint.com";
+	
 	var options = {
-	  'method': 'POST',
-	  'url': SiteURL+`/_api/Web/Folders/add(\'${documentLibraryName}/${folderName}\')`,
+	  'method': 'GET',
+	  'url': SiteURL+`/_api/web/GetFolderByServerRelativeUrl(\'${documentLibraryName}/${folderName}\')/Exists`,
 	  'headers': {
+		'Accept': 'application/json;odata=verbose', 
 		'Authorization': 'Bearer '+token
 	  }
 	};
-	request(options, function (error, response) {
+	request(options, function (error, response,body) {
 	  if (error) throw new Error(error);
-	  console.log("Folder Created!");
-	  
-	  
-	  // Check and Resolve the User
-	  var UserEmail = "deval@spo365devfactory.onmicrosoft.com";
+	  var result = JSON.parse(body);
+	  console.log(result['d']['Exists']);
+	  if(!result['d']['Exists']){
+		  var options = {
+		  'method': 'POST',
+		  'url': SiteURL+`/_api/Web/Folders/add(\'${documentLibraryName}/${folderName}\')`,
+		  'headers': {
+			'Authorization': 'Bearer '+token
+		  }
+		};
+		request(options, function (error, response,body) {
+		  if (error) throw new Error(error);
+		  console.log("Folder Created!");
+		});
+	  }
+	  //console.log(response.body);
+	});
+
+	
+	
+});*/
+
+ShareFolder().then(token => {
+	// Check and Resolve the User
+		var SiteURL = "https://spo365devfactory.sharepoint.com";
+		var UserEmail = "deval@spo365devfactory.onmicrosoft.com";
+		var documentLibraryName = "Shared%20Documents";
+		var folderName = "test1Demo";
 		var options = {
 		  'method': 'POST',
 		  'url': SiteURL+'/_api/SP.UI.ApplicationPages.ClientPeoplePickerWebServiceInterface.clientPeoplePickerResolveUser',
@@ -107,8 +132,7 @@ getToken().then(token => {
 			});
 
 		});
-
-	});
 });
+
 
 
